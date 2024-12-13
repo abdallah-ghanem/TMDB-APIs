@@ -107,8 +107,8 @@ export class MovieService {
       voteAverage: movie.voteAverage,
       voteCount: movie.voteCount,
       genres: movie.genres,
-      /* ratings: movie.ratings,
-      averageRating: movie.averageRating, // Add calculated average rating */
+      ratings: movie.ratings,
+      averageRating: movie.averageRating, // Add calculated average rating 
     };
   }
   

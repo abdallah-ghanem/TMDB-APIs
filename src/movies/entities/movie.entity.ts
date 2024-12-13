@@ -35,6 +35,13 @@ export class Movie extends Document {
 
     @Prop({ type: [Number], default: [] })
     ratings: number[];
+
+    // Method to calculate the average rating
+    get averageRating(): number {
+        if (this.ratings.length === 0) return 0;
+        const total = this.ratings.reduce((acc, rating) => acc + rating, 0);
+        return total / this.ratings.length;
+    }
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);
