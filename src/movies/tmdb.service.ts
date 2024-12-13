@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { TMDBResponse } from './tmdb-response.interface';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class TmdbService {
     private readonly apiKey = '3c5af44d51ce89d48dd3dff3894d14d3'; // Replace with your API key  
     private readonly baseUrl = 'https://api.themoviedb.org/3';
+    private readonly logger = new Logger(TmdbService.name);
 
     constructor(private httpService: HttpService) { }
 
@@ -62,6 +64,21 @@ export class TmdbService {
             },
         );
         return await lastValueFrom(response$);
+    }
+
+    // Cron job to fetch popular movies every day at midnight
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    async syncMovies() {
+        this.logger.log('Syncing popular movies with TMDB...');
+        for (let page = 1; page <= 5; page++) { // Sync 5 pages, adjust based on your requirements
+            await this.fetchPopularMovies(page);
+            this.logger.log(`Page ${page} synced successfully!`);
+        }
+    }
+
+    // Add a manual trigger for the syncMovies function to test it without waiting for the cron schedule
+    async triggerSyncManually() {
+        await this.syncMovies();  // This triggers the syncMovies method manually
     }
 
 }

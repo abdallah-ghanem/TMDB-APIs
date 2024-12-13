@@ -85,5 +85,11 @@ export class MoviesController {
   ) {
     return this.movieService.rateMovie(id, updateMovieDto);
   }
+
+  @Get('test-sync')
+  async testSync() {
+    await this.tmdbService.triggerSyncManually();
+    return { message: 'TMDB sync started manually!' };
+  }
   
 }
